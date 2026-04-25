@@ -8,7 +8,10 @@ import java.util.List;
 
 public interface FavoriteAccountService {
 
-    public List<FavoriteAccountResponseDTO> fetchAllFavoriteAccount(String customerId);
+    List<FavoriteAccountResponseDTO> fetchAllFavoriteAccount(String customerId);
 
-    public void addFavoriteAccount(String customerId, AddFavoriteAccountDto addFavoriteAccount);
+
+    void addFavoriteAccount(String customerId, AddFavoriteAccountDto addFavoriteAccount);
+
+    void deleteFavouriteAccount(String customerId, String iban);
 }

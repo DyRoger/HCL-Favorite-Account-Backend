@@ -27,7 +27,7 @@ public class FavoriteAccount {
     @Column(name = "account_name", nullable = false)
     private String accountName;
 
-    @Column(name = "iban", nullable = false, length = 20)
+    @Column(name = "iban", nullable = false, length = 20,unique = true)
     private String iban;
 
     // FK → bank_mapping.code

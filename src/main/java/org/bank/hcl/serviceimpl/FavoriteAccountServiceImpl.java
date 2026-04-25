@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bank.hcl.dto.AddFavoriteAccountDto;
 import org.bank.hcl.dto.FavoriteAccountResponseDTO;
+import org.bank.hcl.exceptionhandler.ResourceNotFoundException;
 import org.bank.hcl.mapper.FavoriteAccountMapper;
 import org.bank.hcl.model.AuditLog;
 import org.bank.hcl.model.BankMapping;
@@ -56,6 +57,11 @@ public class FavoriteAccountServiceImpl implements FavoriteAccountService {
                 .findByCode(addFavoriteAccount.getIban().substring(4, 8))
                 .orElseThrow(() -> new RuntimeException("Bank not found"));
 
+        favoriteAccountRepository.findByIban(addFavoriteAccount.getIban()).
+                ifPresent(acc -> {
+                    throw new IllegalArgumentException("Account already exists");
+                });
+
         FavoriteAccount favoriteAccount = FavoriteAccount.builder()
                 .bankMapping(bankMapping)
                 .accountName(addFavoriteAccount.getAccountName())
@@ -78,5 +84,19 @@ public class FavoriteAccountServiceImpl implements FavoriteAccountService {
                 .message("Added account: " + addFavoriteAccount.getAccountName())
                 .createdAt(LocalDateTime.now())
                 .build());
+    }
+
+    @Override
+    public void deleteFavouriteAccount(String customerId, String iban) {
+        User user= userRepository.findByCustomerId(customerId).
+                orElseThrow(() -> new ResourceNotFoundException("User not found with customerId: " + customerId));
+
+        FavoriteAccount account = favoriteAccountRepository
+                .findByBankUserCustomerIdAndIban(customerId, iban)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Favorite account not found with IBAN: " + iban)
+                );
+
+        favoriteAccountRepository.delete(account);
     }
 }
