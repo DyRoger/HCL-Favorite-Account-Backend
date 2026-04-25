@@ -1,6 +1,8 @@
 package org.bank.hcl.config;
 
 
+import org.bank.hcl.exceptionhandler.JwtAccessDeniedHandler;
+import org.bank.hcl.exceptionhandler.JwtAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -22,18 +24,24 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+    private final JwtAccessDeniedHandler accessDeniedHandler;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
+                          JwtAuthenticationEntryPoint authenticationEntryPoint,
+                          JwtAccessDeniedHandler accessDeniedHandler) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.authenticationEntryPoint = authenticationEntryPoint;
+        this.accessDeniedHandler = accessDeniedHandler;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(Customizer.withDefaults()) // Enables CORS
-                .csrf(csrf -> csrf.disable()) // Disable CSRF for APIs
+                .cors(Customizer.withDefaults())
+                .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/health",
@@ -46,8 +54,11 @@ public class SecurityConfig {
                                 "/api/v1/login")
                         .permitAll()
                         .anyRequest().authenticated())
-                .httpBasic(httpBasic -> httpBasic.disable()) // disable Basic Auth
-                .formLogin(form -> form.disable()) // disable Form Login
+                .httpBasic(httpBasic -> httpBasic.disable())
+                .formLogin(form -> form.disable())
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(authenticationEntryPoint)   // 401
+                        .accessDeniedHandler(accessDeniedHandler))             // 403
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

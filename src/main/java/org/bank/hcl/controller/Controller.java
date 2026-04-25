@@ -3,12 +3,9 @@ package org.bank.hcl.controller;
 import org.bank.hcl.model.LoginHash;
 import org.bank.hcl.service.JwtService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -30,17 +27,20 @@ public class Controller {
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> getToken(@RequestBody LoginHash loginHash) {
         if (loginHash == null || loginHash.getHash() == null || loginHash.getHash().isBlank()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "hash is required"));
+            throw new IllegalArgumentException("hash is required");
         }
 
         if (configuredHash == null || configuredHash.isBlank() || !safeEquals(configuredHash, loginHash.getHash())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("error", "invalid login hash"));
+            throw new BadCredentialsException("Invalid login hash");
         }
 
         String token = jwtService.generateToken("fav-account-client");
         return ResponseEntity.ok(Map.of("token", token, "tokenType", "Bearer"));
+    }
+
+    @GetMapping("/test-auth")
+    public String test() {
+        return "Tested";
     }
 
     private boolean safeEquals(String left, String right) {
