@@ -2,6 +2,7 @@
 //
 //import org.springframework.http.ResponseEntity;
 //import org.springframework.web.bind.annotation.GetMapping;
+//import org.springframework.web.bind.annotation.PathVariable;
 //import org.springframework.web.bind.annotation.RequestMapping;
 //import org.springframework.web.bind.annotation.RestController;
 //
@@ -10,8 +11,12 @@
 //public class BankingController {
 //
 //
+//
 //    @GetMapping("/bank/{iban}")
-//    public ResponseEntity<String> fetchBankName(){
+//    public ResponseEntity<String> fetchBankName(@PathVariable String iban){
+//
+//
+//
 //
 //    }
 //}

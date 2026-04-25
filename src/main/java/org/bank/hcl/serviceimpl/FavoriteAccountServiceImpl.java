@@ -1,4 +1,4 @@
-package org.bank.hcl.serviceImpl;
+package org.bank.hcl.serviceimpl;
 
 import lombok.RequiredArgsConstructor;
 import org.bank.hcl.dto.AddFavoriteAccountDto;
