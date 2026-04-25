@@ -15,4 +15,7 @@ public class AddFavoriteAccountDto {
 
     @NotEmpty(message = "AccountNumber cannot be empty")
     private String iban;
+
+    @NotEmpty(message = "BankCode cannot be empty")
+    private String bankCode;
 }

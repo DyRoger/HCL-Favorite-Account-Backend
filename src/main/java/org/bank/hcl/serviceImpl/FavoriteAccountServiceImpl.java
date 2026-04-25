@@ -31,13 +31,19 @@ public class FavoriteAccountServiceImpl implements FavoriteAccountService {
 
     @Override
     public void addFavoriteAccount(String customerId, AddFavoriteAccountDto addFavoriteAccount) {
-      User user= userRepository.findByCustomerId(customerId).orElseThrow();
-        FavoriteAccount.builder()
-                .bankMapping()
+        User user = userRepository.findByCustomerId(customerId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+        org.bank.hcl.model.BankMapping bankMapping = bankMappingRepository.findById(addFavoriteAccount.getBankCode())
+            .orElseThrow(() -> new RuntimeException("Bank not found"));
+            
+        FavoriteAccount favoriteAccount = FavoriteAccount.builder()
+                .bankMapping(bankMapping)
                 .accountName(addFavoriteAccount.getAccountName())
                 .iban(addFavoriteAccount.getIban())
-                .bankUser()
+                .bankUser(user)
                 .createdAt(LocalDateTime.now())
-
+                .build();
+                
+        favoriteAccountRepository.save(favoriteAccount);
     }
 }

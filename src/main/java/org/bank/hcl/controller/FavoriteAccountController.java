@@ -24,9 +24,9 @@ public class FavoriteAccountController {
     }
 
     @PostMapping("/customers/{customerId}/favorite-accounts")
-    public ResponseEntity<List<FavoriteAccountResponseDTO>>
-    addFavoriteAccount(@PathVariable String customerId,
+    public ResponseEntity<Void> addFavoriteAccount(@PathVariable String customerId,
                        @RequestBody AddFavoriteAccountDto addFavoriteAccount){
-        return new ResponseEntity<>(account.fetchAllFavoriteAccount(customerId), HttpStatus.OK);
+        account.addFavoriteAccount(customerId, addFavoriteAccount);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
