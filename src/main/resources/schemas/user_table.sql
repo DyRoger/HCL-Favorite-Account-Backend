@@ -1,4 +1,4 @@
-CREATE TABLE user (
+CREATE TABLE bank_user (
                       id BIGSERIAL PRIMARY KEY,
                       customer_id VARCHAR(50) NOT NULL UNIQUE,
                       name VARCHAR(100) NOT NULL,
