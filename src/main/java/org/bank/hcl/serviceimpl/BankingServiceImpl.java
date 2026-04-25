@@ -1,6 +1,7 @@
 package org.bank.hcl.serviceimpl;
 
 import lombok.RequiredArgsConstructor;
+import org.bank.hcl.dto.BankNameResponseDto;
 import org.bank.hcl.model.BankMapping;
 import org.bank.hcl.repository.BankMappingRepository;
 import org.bank.hcl.service.BankingService;
@@ -13,13 +14,12 @@ public class BankingServiceImpl implements BankingService {
     private final BankMappingRepository bankMappingRepository;
 
     @Override
-    public String fetchBankName(String iban) {
-        System.out.println(iban.substring(4,8));
+    public BankNameResponseDto fetchBankName(String iban) {
        BankMapping bankMapping =
                bankMappingRepository.
                        findByCode(iban.substring(4,8))
                        .orElseThrow(()->new RuntimeException("Bank not found"));
 
-       return bankMapping.getBankName();
+       return BankNameResponseDto.builder().bankName(bankMapping.getBankName()).build();
     }
 }
