@@ -27,6 +27,8 @@ public class FavoriteAccountController {
     public ResponseEntity<List<FavoriteAccountResponseDTO>>
     addFavoriteAccount(@PathVariable String customerId,
                        @RequestBody AddFavoriteAccountDto addFavoriteAccount){
-        return new ResponseEntity<>(account.fetchAllFavoriteAccount(customerId), HttpStatus.OK);
+        return new ResponseEntity<>(account.fetchAllFavoriteAccount(customerId), HttpStatus.CREATED);
     }
+
+
 }

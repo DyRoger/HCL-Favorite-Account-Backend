@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.bank.hcl.dto.AddFavoriteAccountDto;
 import org.bank.hcl.dto.FavoriteAccountResponseDTO;
 import org.bank.hcl.mapper.FavoriteAccountMapper;
+import org.bank.hcl.model.BankMapping;
 import org.bank.hcl.model.FavoriteAccount;
 import org.bank.hcl.model.User;
 import org.bank.hcl.repository.BankMappingRepository;
@@ -31,13 +32,21 @@ public class FavoriteAccountServiceImpl implements FavoriteAccountService {
 
     @Override
     public void addFavoriteAccount(String customerId, AddFavoriteAccountDto addFavoriteAccount) {
-      User user= userRepository.findByCustomerId(customerId).orElseThrow();
-        FavoriteAccount.builder()
-                .bankMapping()
+      User user= userRepository.findByCustomerId(customerId).
+              orElseThrow(() -> new RuntimeException("User not found with customerId: " + customerId));
+
+      BankMapping bankMapping = bankMappingRepository.findByCode(addFavoriteAccount.getIban().substring(4,8))
+              .orElseThrow(() -> new RuntimeException("Bank not found"));
+
+        FavoriteAccount favoriteAccount = FavoriteAccount.builder()
+                .bankMapping(bankMapping)
                 .accountName(addFavoriteAccount.getAccountName())
                 .iban(addFavoriteAccount.getIban())
-                .bankUser()
+                .bankUser(user)
                 .createdAt(LocalDateTime.now())
+                .build();
+
+        favoriteAccountRepository.save(favoriteAccount);
 
     }
 }
