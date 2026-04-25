@@ -47,6 +47,12 @@ public class GlobalExceptionHandler {
 
     // ── 404 Not Found ────────────────────────────────────────────────────────
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleResourceNotFound(
+            ResourceNotFoundException ex, HttpServletRequest request) {
+        return build(HttpStatus.NOT_FOUND, ex.getMessage(), request.getRequestURI());
+    }
+
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFound(
             NoHandlerFoundException ex, HttpServletRequest request) {
@@ -69,15 +75,6 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred", request.getRequestURI());
     }
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<?> handleNotFound(ResourceNotFoundException ex) {
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Map.of(
-                        "message", ex.getMessage(),
-                        "status", 404
-                ));
-    }
     // ── Helper ───────────────────────────────────────────────────────────────
 
     private ResponseEntity<ErrorResponse> build(HttpStatus status, String message, String path) {

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bank.hcl.dto.AddFavoriteAccountDto;
 import org.bank.hcl.dto.FavoriteAccountResponseDTO;
+import org.bank.hcl.dto.UpdateFavoriteAccountDto;
 import org.bank.hcl.exceptionhandler.ResourceNotFoundException;
 import org.bank.hcl.mapper.FavoriteAccountMapper;
 import org.bank.hcl.model.AuditLog;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -51,11 +53,13 @@ public class FavoriteAccountServiceImpl implements FavoriteAccountService {
     @Override
     public void addFavoriteAccount(String customerId, AddFavoriteAccountDto addFavoriteAccount) {
         User user = userRepository.findByCustomerId(customerId)
-                .orElseThrow(() -> new RuntimeException("User not found with customerId: " + customerId));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "User not found with customerId: " + customerId));
 
         BankMapping bankMapping = bankMappingRepository
                 .findByCode(addFavoriteAccount.getIban().substring(4, 8))
-                .orElseThrow(() -> new RuntimeException("Bank not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Bank not found for IBAN code: " + addFavoriteAccount.getIban().substring(4, 8)));
 
         favoriteAccountRepository.findByIban(addFavoriteAccount.getIban()).
                 ifPresent(acc -> {
@@ -98,5 +102,37 @@ public class FavoriteAccountServiceImpl implements FavoriteAccountService {
                 );
 
         favoriteAccountRepository.delete(account);
+
+    }
+    
+    public void updateFavoriteAccount(String customerId, String iban, UpdateFavoriteAccountDto updateDto) {
+        FavoriteAccount existing = favoriteAccountRepository.findByIbanAndBankUserCustomerId(iban, customerId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Favorite account not found for IBAN: " + iban));
+
+        BankMapping bankMapping = bankMappingRepository
+                .findByCode(updateDto.getIban().substring(4, 8))
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Bank not found for IBAN code: " + updateDto.getIban().substring(4, 8)));
+
+        existing.setAccountName(updateDto.getAccountName());
+        existing.setIban(updateDto.getIban());
+        existing.setBankMapping(bankMapping);
+        existing.setUpdatedAt(LocalDateTime.now());
+
+        favoriteAccountRepository.save(existing);
+
+        log.info("Favorite account updated | customerId: {} | iban: {} | newAccountName: {}",
+                customerId, iban, updateDto.getAccountName());
+
+        auditLogRepository.save(AuditLog.builder()
+                .customerId(customerId)
+                .action("UPDATE_FAVORITE")
+                .resource("FAVORITE_ACCOUNT")
+                .resourceId(existing.getId())
+                .status("SUCCESS")
+                .message("Updated account '" + updateDto.getAccountName() + "' via IBAN: " + iban)
+                .createdAt(LocalDateTime.now())
+                .build());
     }
 }

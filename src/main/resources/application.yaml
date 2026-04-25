@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/hclBanking
     username: postgres
-    password: pgadmin
+    password: abcd1234
     driver-class-name: org.postgresql.Driver
   # Disable default security user
   security:

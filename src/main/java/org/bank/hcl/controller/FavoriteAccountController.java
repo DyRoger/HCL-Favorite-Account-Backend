@@ -3,6 +3,7 @@ package org.bank.hcl.controller;
 import lombok.RequiredArgsConstructor;
 import org.bank.hcl.dto.AddFavoriteAccountDto;
 import org.bank.hcl.dto.FavoriteAccountResponseDTO;
+import org.bank.hcl.dto.UpdateFavoriteAccountDto;
 import org.bank.hcl.service.FavoriteAccountService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,4 +40,12 @@ public class FavoriteAccountController {
     }
 
 
+    @PutMapping("/customers/{customerId}/favorite-accounts/{iban}")
+    public ResponseEntity<Void> updateFavoriteAccount(
+            @PathVariable String customerId,
+            @PathVariable String iban,
+            @RequestBody UpdateFavoriteAccountDto updateDto) {
+        favoriteAccountService.updateFavoriteAccount(customerId, iban, updateDto);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

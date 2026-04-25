@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+import org.bank.hcl.exceptionhandler.ResourceNotFoundException;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -25,7 +27,8 @@ public class BankingServiceImpl implements BankingService {
     public BankNameResponseDto fetchBankName(String iban) {
         BankMapping bankMapping = bankMappingRepository
                 .findByCode(iban.substring(4, 8))
-                .orElseThrow(() -> new RuntimeException("Bank not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Bank not found for IBAN code: " + iban.substring(4, 8)));
 
         String customerId = getCustomerId();
         log.info("Bank name fetched | customerId: {} | bankCode: {}", customerId, iban.substring(4, 8));
