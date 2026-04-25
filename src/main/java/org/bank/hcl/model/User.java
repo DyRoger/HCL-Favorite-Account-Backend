@@ -29,6 +29,6 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "bankUser")
+    @OneToMany(mappedBy = "FavoriteAccount")
     private List<FavoriteAccount> favoriteAccounts;
 }
