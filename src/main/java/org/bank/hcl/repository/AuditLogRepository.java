@@ -1,0 +1,8 @@
+package org.bank.hcl.repository;
+
+import org.bank.hcl.model.AuditLog;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface AuditLogRepository extends JpaRepository<AuditLog, Long> {
+}
+

@@ -2,6 +2,7 @@ package org.bank.hcl.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "audit_log")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuditLog {
@@ -35,6 +37,9 @@ public class AuditLog {
 
     @Column(columnDefinition = "TEXT")
     private String message;
+
+    @Column(name = "ip_address")
+    private String ipAddress;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
