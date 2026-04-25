@@ -13,21 +13,32 @@ import org.bank.hcl.controller.Controller;
 import org.bank.hcl.model.BankMapping;
 import org.bank.hcl.model.FavoriteAccount;
 import org.bank.hcl.service.PayeeService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-@WebMvcTest(Controller.class)
+@ExtendWith(MockitoExtension.class)
 class ControllerTest {
 
-    @Autowired
     private MockMvc mockMvc;
 
-    @MockitoBean
+    @Mock
     private PayeeService payeeService;
+
+    @BeforeEach
+    void setup() {
+        Controller controller = new Controller(payeeService);
+        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+    }
 
     @Test
     void addPayee_ShouldReturnCreatedResponse() throws Exception {
