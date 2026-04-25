@@ -1,18 +1,25 @@
 package org.bank.hcl.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "favorite_account")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class FavoriteAccount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // FK → bank_user.customer_id
     @ManyToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "customer_id", nullable = false)
     private User bankUser;
