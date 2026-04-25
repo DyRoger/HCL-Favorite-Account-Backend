@@ -15,20 +15,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FavoriteAccountController {
 
-    private  final FavoriteAccountService account;
+    private final FavoriteAccountService account;
 
     @GetMapping("/customers/{customerId}/favorite-accounts")
     public ResponseEntity<List<FavoriteAccountResponseDTO>>
-    fetchFavouriteAccount(@PathVariable String customerId){
-    return new ResponseEntity<>(account.fetchAllFavoriteAccount(customerId), HttpStatus.OK);
+    fetchFavouriteAccount(@PathVariable String customerId) {
+        return new ResponseEntity<>(account.fetchAllFavoriteAccount(customerId), HttpStatus.OK);
     }
 
     @PostMapping("/customers/{customerId}/favorite-accounts")
-    public ResponseEntity<List<FavoriteAccountResponseDTO>>
-    addFavoriteAccount(@PathVariable String customerId,
-                       @RequestBody AddFavoriteAccountDto addFavoriteAccount){
-        return new ResponseEntity<>(account.fetchAllFavoriteAccount(customerId), HttpStatus.CREATED);
+    public ResponseEntity<Void> addFavoriteAccount(
+            @PathVariable String customerId,
+            @RequestBody AddFavoriteAccountDto addFavoriteAccount) {
+        account.addFavoriteAccount(customerId, addFavoriteAccount);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
-
-
 }

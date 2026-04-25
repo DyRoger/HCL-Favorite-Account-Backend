@@ -17,7 +17,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1")
-public class Controller {
+public class AuthController {
 
     private final JwtService jwtService;
     private final UserRepository userRepository;
@@ -26,7 +26,7 @@ public class Controller {
     @Value("${auth.login-hash:}")
     private String configuredHash;
 
-    public Controller(JwtService jwtService, UserRepository userRepository, AuditService auditService) {
+    public AuthController(JwtService jwtService, UserRepository userRepository, AuditService auditService) {
         this.jwtService = jwtService;
         this.userRepository = userRepository;
         this.auditService = auditService;

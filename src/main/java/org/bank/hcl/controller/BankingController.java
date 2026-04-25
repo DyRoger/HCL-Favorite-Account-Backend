@@ -1,7 +1,6 @@
 package org.bank.hcl.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.bank.hcl.dto.BankNameResponseDto;
 import org.bank.hcl.service.BankingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +17,10 @@ public class BankingController {
     private final BankingService bankingService;
 
     @GetMapping("/bank/{iban}")
-    public ResponseEntity<Object> fetchBankName(@PathVariable String iban){
-        if(iban.length() >=8 ) {
+    public ResponseEntity<Object> fetchBankName(@PathVariable String iban) {
+        if (iban.length() >= 8) {
             return new ResponseEntity<>(bankingService.fetchBankName(iban), HttpStatus.OK);
         }
-      return new ResponseEntity<>("No valid bank present ",HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("No valid bank present", HttpStatus.NOT_FOUND);
     }
 }
