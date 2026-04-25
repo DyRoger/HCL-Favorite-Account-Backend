@@ -1,3 +1,19 @@
 spring:
-  application:
-    name: fav-account
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hclBanking
+    username: postgres
+    password: pgadmin
+    driver-class-name: org.postgresql.Driver
+
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate   # dev: update | prod: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  port: 8080

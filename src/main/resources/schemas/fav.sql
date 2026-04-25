@@ -9,7 +9,7 @@ CREATE TABLE favorite_account (
                                   updated_at TIMESTAMP,
 
                                   CONSTRAINT fk_fav_user
-                                      FOREIGN KEY (customer_id) REFERENCES user(customer_id),
+                                      FOREIGN KEY (customer_id) REFERENCES bank_user(customer_id),
 
                                   CONSTRAINT fk_fav_bank
                                       FOREIGN KEY (bank_code) REFERENCES bank_mapping(code),
