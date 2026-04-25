@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/hclBanking
     username: postgres
-    password: pgadmin
+    password: abcd1234
     driver-class-name: org.postgresql.Driver
   # Disable default security user
   security:
@@ -26,5 +26,5 @@ auth:
   login-hash: ${AUTH_LOGIN_HASH:03ca1c3278cf01923ea5fbf6780b3dace51a548cf7829816be97d6621a66cc8e}
   jwt:
     # Use a long key (>= 32 bytes for HS256). Base64 value is also supported.
-    secret: ${AUTH_JWT_SECRET:change-me-with-a-very-long-secret-key-at-least-32-bytes}
+    secret: ${AUTH_JWT_SECRET:olPeEbbHySjVcPQOr1SqAsbEtHZ2yIhRc0COgZqmTOgtCdg4a4VZAKnQ1qupDirDSyVUwX9IyRLlhNjEE+9SSQ==}
     expiration-ms: ${AUTH_JWT_EXPIRATION_MS:3600000}
